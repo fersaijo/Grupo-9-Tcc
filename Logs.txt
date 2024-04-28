@@ -1,0 +1,9 @@
+14/04/2024
+Equipe php	
+	-Criação de logo da pagina inicial
+	-Criação das paginas da pagina index, cabeçalho, rodapé, loginAction, pagina_professor e pagina_aluno	
+	-Maior parte delas a nível de rascunho, removido linha de verificação até implementação do banco de dados.
+	-Coleta de questionários de semestres anteriores
+27-28/04/2024
+	-correções nas paginas do aluno e professor
+	-crição da tela de cadastro e cadastroAction
