@@ -7,3 +7,8 @@ Equipe php
 27-28/04/2024
 	-correções nas paginas do aluno e professor
 	-crição da tela de cadastro e cadastroAction
+12/05/22024
+	- Criado arquivo conexão BD
+	- Mudando a forma de Login, para alundo e docente
+	- O arquiv loginAction.php faz o login corretamente
+	- Arrumando as páginas do aluno e professor

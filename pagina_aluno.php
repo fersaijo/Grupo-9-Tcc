@@ -11,14 +11,19 @@
 <div class="w3-padding w3-text-grey w3-half w3-display-middle w3-center">
     <?php
     session_start();
-    require_once 'conexaoBD.php';
+    require_once 'ConexaoBD.php';
+    $conn = new ConexaoBD();
+    $conexao = $conn->conectar();
+    if( $conexao->connect_errno){
+        die("Falha na conexão: " . $conexao->connect_error);
+    }
 
     // Recuperando o nome do aluno com base no login da sessão
     $login = $_SESSION['logado'];
-    $sql = "SELECT nome FROM alunos WHERE login = '$login'";
+    $sql = "SELECT username FROM aluno WHERE username = '$login'";
     $resultado = $conexao->query($sql);
     $aluno = $resultado->fetch_assoc();
-    $nome_aluno = $aluno['nome'];
+    $nome_aluno = $aluno['username'];
 
     // Exibindo o nome do aluno
     echo "<h1 class='w3-center w3-teal w3-round-large w3-margin'>Bem-vindo, $nome_aluno</h1>";
