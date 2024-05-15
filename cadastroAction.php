@@ -1,26 +1,54 @@
-<?php require_once ('verificarAcesso.php'); ?>
-<?php require_once ('cabecalho.php'); ?>
-<div class="w3-padding w3-content w3-text-grey w3-third w3-display-middle">
+<div class="w3-padding w3-content w3-text-grey w3-third w3-display-middle" >
     <?php
-        require_once 'conexaoBD.php';
-        $sql = "INSERT INTO Questões (materia, pergunta, opcao1, opcao2, opcao3, opcao4)
-        VALUES ('".$_POST['txtMateria']."', '".$_POST['txtPergunta']."', '".$_POST['txtOpcao1']."', '".$_POST['txtOpcao2']."', '".$_POST['txtOpcao3']."', '".$_POST['txtOpcao4']."')";
-     
-        if ($conexao->query($sql) === TRUE) {
-            echo '
-            <a href="pagina_professor.php">
-                <h1 class="w3-button w3-teal">Questão Salva com sucesso! </h1>
-            </a> 
-            ';
-            
-        } else {
-            echo '
-            <a href="pagina_professor.php">
-                <h1 class="w3-button w3-teal">ERRO! </h1>
-            </a> 
-            ';
+    session_start();    
+    $nome = $_POST['txtNome'];
+    $senha = $_POST['txtSenha'];
+    
+    $professor = $_POST['professor'];
+    //se for on é professor
+
+    require_once 'ConexaoBD.php';
+    
+    $conn = new ConexaoBD();
+    $conexao = $conn->conectar();
+    if( $conexao->connect_errno){
+        die("Falha na conexão: " . $conexao->connect_error);
+    }
+    $nome = $_POST['txtNome'];
+    $sobrenome = $_POST['txtSobrenome'];
+    
+    $data = date("Y-m-d", strtotime($_POST["txtData"]));
+    $logradouro = $_POST['txtLogradouro'];
+    $numero = $_POST['txtNumero'];
+    $complemento = $_POST['txtComplemente'];
+    $bairro = $_POST['txtBairro'];
+    $cidade = $_POST['txtCidade'];
+    $uf = $_POST['txtEstado'];
+    $cep = $_POST['txtCEP'];
+    $username = $_POST['txtUsuario'];
+    $senha = $_POST['txtSenha'];
+
+    $sql = "INSERT INTO `pessoa` (`nome`, `sobrenome`, `data_Nascimento`, `logradouro`, `numero`, `bairro`, `complemento`, `cidade`, `uf`, `cep`) 
+    VALUES ('$nome', '$sobrenome', '$data', '$logradouro', '$numero', '$bairro', '$complemento', '$cidade', '$uf', '$cep');";
+    echo $sql;
+
+    if( $conexao->query($sql) === TRUE){
+        $id = mysqli_insert_id($conexao);
+
+        $sql2 = "INSERT INTO aluno (id_pessoa,username,senha) 
+        VALUES ('$id','$username','$senha'); ";
+
+        if($conexao->query($sql2)){
+            echo 'Sucesso';
+            require 'index.php';
+        }else{
+            echo 'erro';
         }
+
+    }else{
+        echo 'erro';
+        }
+    
         $conexao->close();
     ?>
 </div>
-<?php require_once ('rodape.php'); ?>

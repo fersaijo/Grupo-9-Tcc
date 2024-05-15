@@ -12,3 +12,7 @@ Equipe php
 	- Mudando a forma de Login, para alundo e docente
 	- O arquiv loginAction.php faz o login corretamente
 	- Arrumando as páginas do aluno e professor
+15/06/2024
+	- pagina de cadastro
+	-página de atualização de cadastro
+	- criaçãodo arquivo Action.php que controla a navegação e conexao com banco
