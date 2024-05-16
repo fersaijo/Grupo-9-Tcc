@@ -34,7 +34,7 @@
 
 
     <div class="w3-row">
-        <a href="cadastro.php" class="w3-button w3-margin w3-margin-right w3-round-large w3-teal">
+        <a href="cadastroQuestoes.php" class="w3-button w3-margin w3-margin-right w3-round-large w3-teal">
             Cadastrar Questões
         </a>
         <a href="listar.php" class="w3-button w3-margin w3-round-large w3-teal">

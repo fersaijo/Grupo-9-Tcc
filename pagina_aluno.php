@@ -57,7 +57,7 @@
         <a href="listar_notas.php" class="w3-button w3-margin w3-round-large w3-teal">
             Verificar notas
         </a>
-        <a href="atualizarDadosDocente.php" class="w3-button w3-margin w3-round-large w3-teal">
+        <a href="atualizarDados.php" class="w3-button w3-margin w3-round-large w3-teal">
            Atualizar dados
         </a>
     </div>

@@ -158,7 +158,7 @@ function cadastro()
                 <h1 class="w3-button w3-teal">Cadastro feito com Sucesso! </h1>
             </a> 
             ';
-            require 'index.php';
+            
         } else {
             echo '
             <a href="index.php">
@@ -209,6 +209,7 @@ function atualizar()
     pessoa.`data_Nascimento` = '$data',pessoa.numero = '$numero', pessoa.`logradouro` = '$logradouro', pessoa.`bairro` = '$bairro', pessoa.`complemento` = '$complemento',
      pessoa.`cidade` = '$cidade', pessoa.`uf` = '$uf',
      pessoa.`cep` = '$cep', $tabela.username = '$username', $tabela.senha = '$senha' WHERE `pessoa`.`id` = $id_pessoa ;";
+    
     $_SESSION['id_pessoa'] = $id_pessoa; 
     if($conexao->query($sql)){
         if(!$_SESSION['professor']){

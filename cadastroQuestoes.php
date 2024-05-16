@@ -1,5 +1,27 @@
 
-<?php require_once ('cabecalho.php'); ?>
+<?php require_once ('cabecalho.php');
+
+session_start();
+require_once 'ConexaoBD.php';
+$conn = new ConexaoBD();
+$conexao = $conn->conectar();
+if( $conexao->connect_errno){
+    die("Falha na conexão: " . $conexao->connect_error);
+}
+
+// Recuperando o nome do professor com base no login da sessão
+if(!isset($_SESSION['logado'])){
+    echo 'Não logado';
+}
+$login = $_SESSION['logado'];
+
+$sql = "SELECT disciplina FROM  docente INNER JOIN pessoa p ON docente.id_pessoa = p.id WHERE docente.username = '$login'";
+    
+$resultado = $conexao->query($sql);
+$professor = $resultado->fetch_assoc();
+
+
+?>
 <a href="principal.php" class="w3-display-topleft">
     <i class="fa fa-arrow-circle-left w3-large w3-teal w3-button w3-xxlarge"></i>     
 </a> 
@@ -8,7 +30,10 @@
         <form action="cadastroAction.php" class="w3-container" method='post'>
 
             <label class="w3-text-teal" style="font-weight: bold;">Matéria</label>
-            <input name="txtmateria" class="w3-input w3-light-grey w3-border"><br>
+            <input name="txtMateria" value="<?= $professor['disciplina']?>" class="w3-input w3-light-grey w3-border"><br>
+
+            <label for="Agenda" class="w3-text-teal w3-label" style="font-weight: bold;"> Agenda</label>
+            <input name="txtMateria"  class="w3-input w3-light-grey w3-border"><br>
             
             <label class="w3-text-teal" style="font-weight: bold;">Pergunta</label>
             <input name="txtPergunta" class="w3-input w3-light-grey w3-border"><br>
