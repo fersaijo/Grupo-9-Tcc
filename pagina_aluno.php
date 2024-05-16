@@ -1,5 +1,5 @@
 <?php
-session_start();
+
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -14,6 +14,7 @@ session_start();
 <body>
 
     <?php
+    session_start();
     require_once 'ConexaoBD.php';
     $conn = new ConexaoBD();
     $conexao = $conn->conectar();
@@ -23,12 +24,15 @@ session_start();
 
     // Recuperando o nome do aluno com base no login da sessão
     
-    $login = $_POST['txtNome'];
+    if(!isset($_SESSION['logado'])){
+        echo 'Não logado';
+    }
+    $login = $_SESSION['logado'];
     $sql = "SELECT * FROM  aluno INNER JOIN pessoa p ON aluno.id_pessoa = p.id WHERE aluno.username = '$login'";
     $resultado = $conexao->query($sql);
     $aluno = $resultado->fetch_assoc();
     $nome_aluno = $aluno['username'];
-    $_SESSION['logado'] = $nome_aluno;
+    
     
     // Exibindo o nome do aluno
     
@@ -44,7 +48,7 @@ session_start();
 
 <div class="w3-cotainer w3-padding w3-text-grey  w3-center" style="width:50%; margin:auto; display:block;">
     <div class="w3-row w3-margin">
-    <h1 class='w3-center w3-teal w3-round-large w3-margin'>Bem-vindo, <?=  $nome_aluno?> </h1>
+    <?php echo "<h1 class='w3-center w3-teal w3-round-large w3-margin'>Bem-vindo, $nome_aluno </h1>" ?>
     </div>
     <div class="w3-row">
         <a href="questionarios.php" class="w3-button w3-margin w3-margin-right w3-round-large w3-teal">
@@ -53,7 +57,7 @@ session_start();
         <a href="listar_notas.php" class="w3-button w3-margin w3-round-large w3-teal">
             Verificar notas
         </a>
-        <a href="atualizarDados.php" class="w3-button w3-margin w3-round-large w3-teal">
+        <a href="atualizarDadosDocente.php" class="w3-button w3-margin w3-round-large w3-teal">
            Atualizar dados
         </a>
     </div>

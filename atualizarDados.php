@@ -18,15 +18,26 @@
     if( $conexao->connect_errno){
         die("Falha na conexão: " . $conexao->connect_error);
     }
-
-    // Recuperando o nome do aluno com base no login da sessão
+    
+    // Recuperando o nome do usuario com base no login da sessão
+    if(!isset($_SESSION['logado'])){
+        echo 'Não logado';
+    }
     $login = $_SESSION['logado'];
-    $sql = "SELECT * FROM  aluno INNER JOIN pessoa p ON aluno.id_pessoa = p.id WHERE aluno.username = '$login'";
+    
+    //Verificando o tipo de usuário
+    if(!isset($_SESSION['professor'])){
+        echo 'Tipo user?';
+    }else if( $_SESSION['professor'] == true){
+        $tabela = 'docente';
+    }else{
+        $tabela = 'aluno';
+    }
+    
+    $sql = "SELECT * FROM  $tabela INNER JOIN pessoa p ON $tabela.id_pessoa = p.id WHERE $tabela.username = '$login'";
     $resultado = $conexao->query($sql);
-    $aluno = $resultado->fetch_assoc();
-    $nome_aluno = $aluno['username'];
-
-    // Exibindo o nome do aluno
+    $usuario = $resultado->fetch_assoc();
+    $nome_usuario = $usuario['username'];
     
     ?>
 
@@ -44,7 +55,7 @@
     </div>
     <div class="w3-row">
         <form action="Action.php" method="post">
-    <h2 class="w3-center">Meus dados</h2>
+        <h2 class="w3-center">Meus dados</h2>
         
 
         <div class="w3-row w3-section">
@@ -55,9 +66,9 @@
 
         
         <label class="w3-text-gray">Dados Pessoais</label>
-            <input class="w3-input w3-border w3-round-large"  value="<?= $aluno['nome'] ?>"  name="txtNome" type="text" placeholder="Nome">
-            <input class="w3-input w3-border w3-round-large"  value="<?= $aluno['sobrenome'] ?>"  name="txtSobrenome" type="text" placeholder="Sobrenome" style="margin-top: 5px;">
-            <input class="w3-input w3-border w3-round-large"  value="<?= $aluno['data_Nascimento'] ?>"  name="txtData" type="date" placeholder="Data de Nascimento" style="margin-top: 5px;">
+            <input class="w3-input w3-border w3-round-large"  value="<?= $usuario['nome'] ?>"  name="txtNome" type="text" placeholder="Nome">
+            <input class="w3-input w3-border w3-round-large"  value="<?= $usuario['sobrenome'] ?>"  name="txtSobrenome" type="text" placeholder="Sobrenome" style="margin-top: 5px;">
+            <input class="w3-input w3-border w3-round-large"  value="<?= $usuario['data_Nascimento'] ?>"  name="txtData" type="date" placeholder="Data de Nascimento" style="margin-top: 5px;">
         </div>
         </div>
 
@@ -67,13 +78,13 @@
         </div>
         <div class="w3-rest">
             <label class="w3-text-gray">Endereço</label>
-            <input class="w3-input w3-border w3-round-large" value="<?= $aluno['logradouro'] ?>"  name="txtLogradouro" type="text" placeholder="Logradouro">
-            <input class="w3-input w3-border w3-round-large" value="<?= $aluno['numero'] ?>"  name="txtNumero" type="text" placeholder="Número" style="margin-top: 5px;">
-            <input class="w3-input w3-border w3-round-large" value="<?= $aluno['complemento'] ?>"  name="txtComplemento" type="text" placeholder="Complemento" style="margin-top: 5px;">
-            <input class="w3-input w3-border w3-round-large" value="<?= $aluno['bairro'] ?>"  name="txtBairro" type="text" placeholder="Bairro" style="margin-top: 5px;">
-            <input class="w3-input w3-border w3-round-large" value="<?= $aluno['cidade'] ?>"  name="txtCidade" type="text" placeholder="Cidade" style="margin-top: 5px;">
-            <input class="w3-input w3-border w3-round-large" value="<?= $aluno['uf'] ?>"  name="txtEstado" type="text" placeholder="Estado" style="margin-top: 5px;">
-            <input class="w3-input w3-border w3-round-large" value="<?= $aluno['cep'] ?>"  name="txtCEP" type="text" placeholder="CEP" style="margin-top: 5px;">
+            <input class="w3-input w3-border w3-round-large" value="<?= $usuario['logradouro'] ?>"  name="txtLogradouro" type="text" placeholder="Logradouro">
+            <input class="w3-input w3-border w3-round-large" value="<?= $usuario['numero'] ?>"  name="txtNumero" type="text" placeholder="Número" style="margin-top: 5px;">
+            <input class="w3-input w3-border w3-round-large" value="<?= $usuario['complemento'] ?>"  name="txtComplemento" type="text" placeholder="Complemento" style="margin-top: 5px;">
+            <input class="w3-input w3-border w3-round-large" value="<?= $usuario['bairro'] ?>"  name="txtBairro" type="text" placeholder="Bairro" style="margin-top: 5px;">
+            <input class="w3-input w3-border w3-round-large" value="<?= $usuario['cidade'] ?>"  name="txtCidade" type="text" placeholder="Cidade" style="margin-top: 5px;">
+            <input class="w3-input w3-border w3-round-large" value="<?= $usuario['uf'] ?>"  name="txtEstado" type="text" placeholder="Estado" style="margin-top: 5px;">
+            <input class="w3-input w3-border w3-round-large" value="<?= $usuario['cep'] ?>"  name="txtCEP" type="text" placeholder="CEP" style="margin-top: 5px;">
         </div>
         </div>
 
@@ -84,9 +95,9 @@
         </div>
         <div class="w3-rest">
         <label class="w3-text-gray">Dados de Acesso</label>
-            <input class="w3-input w3-border w3-round-large" value="<?= $aluno['username'] ?>"  name="txtUsuario" type="text" placeholder="Usuário">
-            <input class="w3-input w3-border w3-round-large" hidden value="<?= $aluno['senha'] ?>"  name="txtSenha" type="password" placeholder="Senha" style="margin-top: 5px;">
-            <input class="w3-input w3-border w3-round-large" hidden value="<?= $aluno['id'] ?>"  name="txtId" type="text" placeholder="Senha" style="margin-top: 5px;">
+            <input class="w3-input w3-border w3-round-large" value="<?= $usuario['username'] ?>"  name="txtUsuario" type="text" placeholder="Usuário">
+            <input class="w3-input w3-border w3-round-large" hidden value="<?= $usuario['senha'] ?>"  name="txtSenha" type="password" placeholder="Senha" style="margin-top: 5px;">
+            <!-- <input class="w3-input w3-border w3-round-large" hidden value="<?= $usuario['id'] ?>"  name="txtId" type="text" placeholder="Senha" style="margin-top: 5px;"> -->
         </div>
         </div>
         

@@ -1,26 +1,38 @@
 <?php
+require_once 'cabecalho.php';
+
 session_start();
 
 switch ($_POST) {
+    //Login
     case isset($_POST['btnLogin']):
         login();
         break;
 
+        //Cadastrar
     case isset($_POST['btnCadastrar']):
         cadastro();
         break;
 
+        //Atualizar dados do usuário
     case isset($_POST['btnAtualizarDados']):
         atualizar();
         break;
 
+        //Faz o logout
     case isset($_POST['btnSair']):
-        //session_destroy();
+        session_destroy();
         header("Location: index.php");
         break;
 
+        //Voltar para página principal do Aluno
     case isset($_POST['btnVoltarAluno']):
         header("Location: pagina_aluno.php");
+        break;
+
+        //Voltar para página principal do Docente
+    case isset($_POST['btnVoltarDocente']):
+        header("Location: pagina_professor.php");
         break;
 }
 function conectar(){
@@ -54,6 +66,11 @@ function login()
             if ($linha['senha'] == $senha) {
                 $_SESSION['logado'] = $nome;
                 $_SESSION['id_pessoa'] = $linha['id_pessoa'];
+
+                //Avisa a página que é um professor
+                $_SESSION['professor'] = true;
+
+
                 header("Location: pagina_professor.php");
             } else {
                 echo '
@@ -73,26 +90,25 @@ function login()
     } else {// ser for aluno
         $sql = "SELECT * FROM aluno WHERE username =  '" . $nome . "';";
         $resultado = $conexao->query($sql);
-        echo $sql;
         $linha = mysqli_fetch_array($resultado);
         if ($linha != null) {
             if ($linha['senha'] == $senha) {
-                $_SESSION['nome'] = $nome;
-                
-                $_SESSION['id_pessoa'] = 0;
-                echo $_SESSION['id_pessoa']; 
-                require_once 'pagina_aluno.php';
+                $_SESSION['logado'] = $nome;
+                //Avisa que não é professor
+                $_SESSION['professor'] = false;
+                $_SESSION['id_pessoa'] = $linha['id_pessoa'];
+                header("Location: pagina_aluno.php");
 
             } else {
                 echo '
-                    <a href="index.php" class="w3-cyan w3-link">
+                    <a href="index.php" class="w3-cyan w3-link w3-display-middle">
                         <h1 class="w3-button w3-teal">Login Inválido! </h1>
                     </a> 
                     ';
             }
         } else {
             echo '
-            <a href="index.php"class="w3-link w3-cyan">
+            <a href="index.php"class="w3-link w3-cyan w3-display-middle">
                 <h1 class="w3-button w3-teal">Login Inválido! </h1>
             </a> 
             ';
@@ -109,9 +125,6 @@ function cadastro()
     session_start();
     $nome = $_POST['txtNome'];
     $senha = $_POST['txtSenha'];
-
-    $professor = $_POST['professor'];
-    //se for on é professor
     
     $conexao = conectar();
 
@@ -168,7 +181,15 @@ function cadastro()
 function atualizar()
 {
     $conexao = conectar();
-
+    //Verificando o tipo de usuário
+    if(!isset($_SESSION['professor'])){
+        echo 'Não logado';
+    }else if( $_SESSION['professor'] == true){
+        $tabela = 'docente';
+    }else{
+        $tabela = 'aluno';
+    }
+    
     $nome = $_POST['txtNome'];
     $senha = $_POST['txtSenha'];
     $sobrenome = $_POST["txtSobrenome"];
@@ -182,22 +203,31 @@ function atualizar()
     $cep = $_POST['txtCEP'];
     $username = $_POST['txtUsuario'];
     $senha = $_POST['txtSenha'];
-    $id_pessoa = $_POST['txtId'];
+    $id_pessoa = $_SESSION['id_pessoa'];
 
-    $sql = "UPDATE pessoa INNER JOIN aluno ON aluno.id_pessoa = pessoa.id SET pessoa.`nome` = ' $nome ', pessoa.`sobrenome` = '$sobrenome',
+    $sql = "UPDATE pessoa INNER JOIN $tabela ON $tabela.id_pessoa = pessoa.id SET pessoa.`nome` = ' $nome ', pessoa.`sobrenome` = '$sobrenome',
     pessoa.`data_Nascimento` = '$data',pessoa.numero = '$numero', pessoa.`logradouro` = '$logradouro', pessoa.`bairro` = '$bairro', pessoa.`complemento` = '$complemento',
      pessoa.`cidade` = '$cidade', pessoa.`uf` = '$uf',
-     pessoa.`cep` = '$cep', aluno.username = '$username', aluno.senha = '$senha' WHERE `pessoa`.`id` = $id_pessoa ;";
+     pessoa.`cep` = '$cep', $tabela.username = '$username', $tabela.senha = '$senha' WHERE `pessoa`.`id` = $id_pessoa ;";
     $_SESSION['id_pessoa'] = $id_pessoa; 
     if($conexao->query($sql)){
-        echo '
-        <a class="w3-button w3-cyan" href="pagina_aluno.php">
-            <h1 class="w3-button w3-teal">Dados atualizados com Sucesso! </h1>
-        </a> 
-        ';
+        if(!$_SESSION['professor']){
+            echo '
+            <a class="w3-button w3-cyan w3-display-middle" href="pagina_aluno.php">
+                <h1 class="w3-button w3-teal">Dados atualizados com Sucesso! </h1>
+            </a> 
+            ';
+
+        }else{
+            echo '
+            <a class="w3-button w3-cyan w3-display-middle" href="pagina_professor.php">
+                <h1 class="w3-button w3-teal">Dados atualizados com Sucesso! </h1>
+            </a> 
+            ';
+        }
     }else{
         echo '
-        <a class="w3-button w3-cyan" href="pagina_aluno.php">
+        <a class="w3-button w3-cyan w3-display-middle" href="pagina_aluno.php">
             <h1 class="w3-button w3-teal">Erro na atualização! </h1>
         </a> 
         ';
